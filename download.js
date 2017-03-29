@@ -24,11 +24,13 @@
 
 	return function download(data, strFileName, strMimeType) {
 
+		var urlRegex = /^https?:\/\//
+		
 		var self = window, // this script is only for browsers anyway...
 			defaultMime = "application/octet-stream", // this default mime also triggers iframe downloads
 			mimeType = strMimeType || defaultMime,
 			payload = data,
-			url = !strFileName && !strMimeType && payload,
+			url = urlRegex.test(payload) && payload,
 			anchor = document.createElement("a"),
 			toString = function(a){return String(a);},
 			myBlob = (self.Blob || self.MozBlob || self.WebKitBlob || toString),
