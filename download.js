@@ -22,7 +22,7 @@
   }
 }(this, function () {
 
-	return function download(data, strFileName, strMimeType) {
+	return function download(data, strFileName, strMimeType, xhrCallback) {
 
 		var self = window, // this script is only for browsers anyway...
 			defaultMime = "application/octet-stream", // this default mime also triggers iframe downloads
@@ -49,6 +49,9 @@
 			anchor.href = url; // assign href prop to temp anchor
 		  	if(anchor.href.indexOf(url) !== -1){ // if the browser determines that it's a potentially valid url path:
         		var ajax=new XMLHttpRequest();
+			if (xhrCallback) {
+				xhrCallback(ajax);
+			}
         		ajax.open( "GET", url, true);
         		ajax.responseType = 'blob';
         		ajax.onload= function(e){ 
