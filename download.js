@@ -25,6 +25,7 @@
 	return function download(data, strFileName, strMimeType) {
 
 		var urlRegex = /^https?:\/\//
+		var contentDispositionRegex = /filename="(.*)"/
 		
 		var self = window, // this script is only for browsers anyway...
 			defaultMime = "application/octet-stream", // this default mime also triggers iframe downloads
@@ -54,6 +55,10 @@
         		ajax.open( "GET", url, true);
         		ajax.responseType = 'blob';
         		ajax.onload= function(e){ 
+				try {
+					var matches = contentDispositionRegex.exec(ajax.getResponseHeader("Content-Disposition"));
+					fileName = matches[1];
+				} catch (e) {}
 				  download(e.target.response, fileName, defaultMime);
 				};
         		setTimeout(function(){ ajax.send();}, 0); // allows setting custom ajax headers using the return:
