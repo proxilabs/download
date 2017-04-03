@@ -48,7 +48,10 @@
 
 
 		if(url && url.length< 2048){ // if no filename and no mime, assume a url was passed as the only argument
-			fileName = strFileName || url.split("/").pop().split("?")[0];
+			fileName = url.split("/").pop().split("?")[0];
+			if (strFileName && typeof(strFileName) !== 'function') {
+				fileName = strFileName;
+			}
 			anchor.href = url; // assign href prop to temp anchor
 		  	if(anchor.href.indexOf(url) !== -1){ // if the browser determines that it's a potentially valid url path:
         		var ajax=new XMLHttpRequest();
@@ -56,8 +59,10 @@
         		ajax.responseType = 'blob';
         		ajax.onload= function(e){ 
 				try {
-					var matches = contentDispositionRegex.exec(ajax.getResponseHeader("Content-Disposition"));
-					fileName = matches[1];
+					if (strFileName && typeof(strFileName) === 'function') {
+						var matches = contentDispositionRegex.exec(ajax.getResponseHeader("Content-Disposition"));
+						fileName = strFileName(matches[1]);
+					}
 				} catch (e) {}
 				  download(e.target.response, fileName, defaultMime);
 				};
